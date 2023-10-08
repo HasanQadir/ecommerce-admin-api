@@ -99,7 +99,8 @@ This repository contains a FastAPI-based backend API for an e-commerce admin das
 
 3. **Open your browser and go to [http://localhost:8000/docs](http://localhost:8000/docs) to access the FastAPI Swagger documentation.**
 
-4. **Test the API endpoints using the provided Swagger interface or any API client.**
+4. **Test the API endpoints using the provided Swagger interface or using my Postman Public API Collection:
+https://www.postman.com/hqenterprises/workspace/ecommerce-dashboard-api/collection/2347646-05f2af9e-1d26-4f84-b605-292c21fb0c2e?action=share&creator=2347646.**
 
 ## Contributions
 
