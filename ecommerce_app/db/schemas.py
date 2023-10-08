@@ -5,12 +5,15 @@ from datetime import date
 
 
 class Product(BaseModel):
-    product_id: int
-    title: str
     name: str
-    description: str
     price: float
     category_id: int
+
+
+class ProductCreate(Product):
+    product_id: int
+    title: str
+    description: str
 
     class Config:
         from_attributes = True

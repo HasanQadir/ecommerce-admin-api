@@ -19,10 +19,6 @@ class Product(Base):
     price = Column(Float(precision=2), nullable=False)
     category_id = Column(Integer, ForeignKey('categories.category_id'))
 
-    # Define the relationship
-    category = relationship('Category', back_populates='products')
-    sales = relationship('Sale', back_populates='product')
-
 class Sale(Base):
     __tablename__ = 'sales'
 
@@ -30,6 +26,3 @@ class Sale(Base):
     product_id = Column(Integer, ForeignKey('products.product_id'))
     quantity = Column(Integer, nullable=False)
     sale_date = Column(Date, nullable=False)
-
-    # Define the relationship
-    product = relationship('Product', back_populates='sales')
