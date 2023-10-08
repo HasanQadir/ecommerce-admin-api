@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Date, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, Date, ForeignKey, Text, DateTime
 from sqlalchemy.orm import sessionmaker, relationship
-from datetime import date
+from datetime import date, datetime
 
 from db.db_config import Base
 
@@ -26,3 +26,11 @@ class Sale(Base):
     product_id = Column(Integer, ForeignKey('products.product_id'))
     quantity = Column(Integer, nullable=False)
     sale_date = Column(Date, nullable=False)
+
+class Inventory(Base):
+    __tablename__ = 'inventory'
+
+    inventory_id = Column(Integer, primary_key=True)
+    product_id = Column(Integer, ForeignKey('products.product_id'))
+    quantity = Column(Integer, nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow)

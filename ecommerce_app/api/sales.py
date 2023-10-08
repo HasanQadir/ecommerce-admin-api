@@ -8,6 +8,7 @@ from db.models import Product, Sale, Category
 from db import schemas
 from sqlalchemy import func
 from datetime import datetime, timedelta
+from db import crud
 
 router = APIRouter()
 
@@ -27,17 +28,6 @@ def compare_revenue(start_date_1: date, end_date_1: date,
 
     return [schemas.PeriodRevenue(start_date=start_date_1, end_date=end_date_1, total_revenue=total_revenue_1),
             schemas.PeriodRevenue(start_date=start_date_2, end_date=end_date_2, total_revenue=total_revenue_2)]
-
-def calculate_total_revenue(db: Session, start_date: date, end_date: date, category_id: int = None):
-    # Use SQLAlchemy aggregation functions to calculate total revenue
-    query = db.query(func.sum(Sale.quantity * Product.price)).join(Product)
-
-    # Apply filters based on date and optionally category
-    query = query.filter(Sale.sale_date >= start_date, Sale.sale_date <= end_date)
-    if category_id is not None:
-        query = query.filter(Product.category_id == category_id)
-
-    return query.scalar() or 0
 
 @router.get("/sales-by-date-range", response_model=list[schemas.Sale])
 def get_sales_data(start_date: date , end_date: date ,

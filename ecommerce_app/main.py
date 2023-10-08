@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from db.db_config import engine, SessionLocal, Base
-from api import sales, products
+from api import sales, products, inventory
 
 app = FastAPI()
 
 # Include the routes from api/sales.py and api/products.py
 app.include_router(sales.router, prefix="/sales", tags=["sales"])
 app.include_router(products.router, prefix="/products", tags=["products"])
+app.include_router(inventory.router, prefix="/inventory", tags=["inventory"])
 
 # Dependency to create tables on startup
 def create_tables():

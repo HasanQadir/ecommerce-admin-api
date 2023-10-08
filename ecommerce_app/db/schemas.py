@@ -1,7 +1,7 @@
 from typing import Union
 
 from pydantic import BaseModel
-from datetime import date
+from datetime import date, datetime
 
 
 class Product(BaseModel):
@@ -42,13 +42,39 @@ class WeeklyRevenue(Revenue):
     end_date: date
 
 
+class MonthlyRevenue(Revenue):
+    year: int
+    month: int
+
+
 class AnnualRevenue(Revenue):
     year: int
 
 
-class MonthlyRevenue(AnnualRevenue):
-    month: int
-
 class PeriodRevenue(Revenue):
     start_date: date
     end_date: date
+
+
+class InventoryCreate(BaseModel):
+    product_id: int
+    quantity: int
+
+
+class InventoryStatus(BaseModel):
+    product_id: int
+    quantity: int
+
+
+class InventoryUpdate(InventoryCreate):
+    pass
+
+
+class Inventory(BaseModel):
+    inventory_id: int
+    product_id: int
+    quantity: int
+    timestamp: datetime
+
+    class Config:
+        from_attributes = True
