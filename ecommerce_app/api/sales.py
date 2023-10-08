@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 router = APIRouter()
 
-@router.get("/compare-revenue-across-periods")
+@router.get("/compare-revenue-across-periods", response_model=list[schemas.PeriodRevenue])
 def compare_revenue(start_date_1: date, end_date_1: date,
                     start_date_2: date, end_date_2: date,
                     category_id: int = None):
@@ -25,10 +25,8 @@ def compare_revenue(start_date_1: date, end_date_1: date,
 
     db.close()
 
-    return {
-        "period_1": {"start_date": start_date_1, "end_date": end_date_1, "total_revenue": total_revenue_1},
-        "period_2": {"start_date": start_date_2, "end_date": end_date_2, "total_revenue": total_revenue_2},
-    }
+    return [schemas.PeriodRevenue(start_date=start_date_1, end_date=end_date_1, total_revenue=total_revenue_1),
+            schemas.PeriodRevenue(start_date=start_date_2, end_date=end_date_2, total_revenue=total_revenue_2)]
 
 def calculate_total_revenue(db: Session, start_date: date, end_date: date, category_id: int = None):
     # Use SQLAlchemy aggregation functions to calculate total revenue
@@ -41,7 +39,7 @@ def calculate_total_revenue(db: Session, start_date: date, end_date: date, categ
 
     return query.scalar() or 0
 
-@router.get("/sales-by-date-range")
+@router.get("/sales-by-date-range", response_model=list[schemas.Sale])
 def get_sales_data(start_date: date , end_date: date ,
                    product_id: int = None, category_id: int = None):
     db = SessionLocal()
@@ -61,7 +59,7 @@ def get_sales_data(start_date: date , end_date: date ,
 
     db.close()
 
-    return {"sales_data": sales_data}
+    return sales_data
 
 @router.get("/{sale_id}")
 def read_sale(sale_id: int, response_model=schemas.Sale):
@@ -79,7 +77,7 @@ def get_daily_revenue(date: date, response_model=schemas.DailyRevenue):
     total_revenue = db.query(Sale.quantity * Product.price).\
         join(Product).filter(Sale.sale_date == date).scalar()
     db.close()
-    return {"date": date, "total_revenue": total_revenue}
+    return schemas.DailyRevenue(date=date, total_revenue=total_revenue)
 
 @router.get("/revenue/weekly")
 def get_weekly_revenue(start_date: date , end_date: date, response_model=schemas.WeeklyRevenue ):
@@ -89,7 +87,7 @@ def get_weekly_revenue(start_date: date , end_date: date, response_model=schemas
         join(Product).\
         filter(Sale.sale_date >= start_date, Sale.sale_date <= end_date).scalar()
     db.close()
-    return {"start_date": start_date, "end_date": end_date, "total_revenue": total_revenue}
+    return schemas.WeeklyRevenue(start_date=start_date, end_date=end_date, total_revenue=total_revenue)
 
 @router.get("/revenue/monthly")
 def get_monthly_revenue(year: int , month: int, response_model=schemas.MonthlyRevenue):
@@ -102,7 +100,7 @@ def get_monthly_revenue(year: int , month: int, response_model=schemas.MonthlyRe
         filter(Sale.sale_date >= start_date, Sale.sale_date <= end_date).scalar()
 
     db.close()
-    return {"year": year, "month": month, "total_revenue": total_revenue}
+    return schemas.MonthlyRevenue(year=year, month=month, total_revenue=total_revenue)
 
 @router.get("/revenue/annual")
 def get_annual_revenue(year: int, response_model=schemas.AnnualRevenue):
@@ -113,4 +111,4 @@ def get_annual_revenue(year: int, response_model=schemas.AnnualRevenue):
     total_revenue = db.query(func.sum(Sale.quantity * Product.price)).\
         join(Product).filter(Sale.sale_date >= start_date, Sale.sale_date <= end_date).scalar()
     db.close()
-    return {"year": year, "total_revenue": total_revenue}
+    return schemas.AnnualRevenue(year=year, total_revenue=total_revenue)

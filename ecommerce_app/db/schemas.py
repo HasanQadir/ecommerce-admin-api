@@ -39,7 +39,7 @@ class DailyRevenue(Revenue):
 
 class WeeklyRevenue(Revenue):
     start_date: date
-    start_date: date
+    end_date: date
 
 
 class AnnualRevenue(Revenue):
@@ -48,3 +48,7 @@ class AnnualRevenue(Revenue):
 
 class MonthlyRevenue(AnnualRevenue):
     month: int
+
+class PeriodRevenue(Revenue):
+    start_date: date
+    end_date: date
