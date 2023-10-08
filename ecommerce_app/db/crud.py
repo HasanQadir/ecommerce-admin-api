@@ -2,13 +2,13 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from db.models import Inventory, Sale
+from db.models import Inventory, Sale, Product
 from db import schemas
 from datetime import date, datetime
 
 
 def create_inventory(db: Session, inventory: schemas.InventoryCreate):
-    db_inventory = Inventory(**inventory.dict())
+    db_inventory = Inventory(**inventory.dict())    
     db.add(db_inventory)
     db.commit()
     db.refresh(db_inventory)
